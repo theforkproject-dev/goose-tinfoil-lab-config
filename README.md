@@ -1,42 +1,13 @@
-# Tinfoil Containers Template
+# Goose on Tinfoil: bounded integration test
 
-A GitHub template repository for deploying a pre-built Docker image as a [Tinfoil Container](https://docs.tinfoil.sh/containers/overview) (in a secure enclave)
+Public measured deployment configuration only. Application image and source are private.
 
-Out of the box, this template deploys [`tinfoil-containers-hello-world`](https://github.com/tinfoilsh/tinfoil-containers-hello-world): a tiny HTTP server that reads a `MESSAGE` env var and a `GREETING_TOKEN` secret, and responds with both.
+One CPU-only, non-debug Tinfoil instance contains two roles: a Goose 1.54.0 runner with only internal networking, and an inference broker with an explicit Tinfoil/verification-host egress allowlist. The fixed task asks two specialists to compute synthetic revenue and data-quality results using GLM-5.3. The state-machine agent loop is enabled.
 
-## Deploy It
+Only `/health`, authenticated `/run` and authenticated `/result` are exposed. One run is accepted per process lifetime. No arbitrary prompts, shell tools, file tools, uploads, persistent volumes, general web access, or production data are part of this test. Inference credentials are delivered at runtime over an attestation-verified connection, never committed to this repository or the image. Goose receives no real provider or provisioning credential.
 
-1. Click **[Use this template](https://github.com/tinfoilsh/tinfoil-containers-template/generate)** → **Create a new repository**
-2. In the [Tinfoil Dashboard](https://dash.tinfoil.sh), open the **Secrets** tab and add `GREETING_TOKEN` with any value
-3. Release a version by running the **Tinfoil Release** workflow:
-   - **CLI:** `gh workflow run tinfoil-release.yml -f version=v0.0.1`
-   - **UI:** **Actions** tab → **Tinfoil Release** → **Run workflow**, then enter the version
-4. **Containers** → **Deploy**, select your repo and tag, and click **Deploy**
+Outbound vendor telemetry and OTel export are disabled for this test, not removed from Goose's code. This is not a hardened production agent product or a security certification. Stop the instance after the test; local scratch is ephemeral.
 
-Once running, `curl https://<container-name>.<org>.containers.tinfoil.dev` returns:
+Private image: `ghcr.io/theforkproject-dev/goose-tinfoil-lab`, pinned by digest in `tinfoil-config.yml`.
 
-```
-MESSAGE: <value from tinfoil-config.yml>
-GREETING_TOKEN: <present if secret exists>
-```
-
-## Use your own image
-
-1. If you have a prebuilt image, edit `tinfoil-config.yml` to point at the image you want to deploy: change `image:` to your `<repo>@sha256:<digest>`, adjust `env`/`secrets`/`shim` for your container, then release a new version.
-2. If you have your own code in a private repo, [`tinfoil-containers-hello-world`](https://github.com/tinfoilsh/tinfoil-containers-hello-world) shows the build-and-publish side and can be added to an existing repository.
-3. If you have your own code in a public repo, use the simple [`tinfoil-public-containers-template`](https://github.com/tinfoilsh/tinfoil-public-containers-template) for an all-in-one-repo example. Since the `tinfoil-config.yml` has to be public, public app code can live in the same repo as the config.
-
-## Updating
-
-Edit `tinfoil-config.yml`, commit, then release a new version (`gh workflow run tinfoil-release.yml -f version=v0.0.2`, or via the **Actions** tab). Then click **Update** in the dashboard. Each release creates an auditable record in the Sigstore transparency log.
-
-## Documentation
-
-For the full configuration reference, secrets management, debug mode, and more:
-
-**[docs.tinfoil.sh/containers](https://docs.tinfoil.sh/containers/overview)**
-
-## Support
-
-- [Documentation](https://docs.tinfoil.sh)
-- [Email Support](mailto:contact@tinfoil.sh)
+Release workflows are taken from Tinfoil's public container template at `0eddc320b8f328d7a3c057152596934444ac2d75`. Runtime sources include Goose under Apache-2.0 and Tinfoil SDK under Apache-2.0; their required notices remain in the image.

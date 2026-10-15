@@ -1,18 +1,69 @@
-# Tinfoil Container Configuration
-# For updates: edit this file, commit, run the workflow (e.g., v0.0.2)
+# One bounded synthetic task; no arbitrary prompts, code execution, or files API.
 cvm-version: 0.14.7
 cpus: 2
 memory: 8192
 
+networks:
+  internal:
+    egress: closed
+  inference:
+    egress: allowlist
+    allow:
+      - atc.tinfoil.sh
+      - tuf-repo-cdn.sigstore.dev
+      - inference.tinfoil.sh
+      - router-0.tinfoil.sh
+      - router.inf6.tinfoil.sh
+
 containers:
-  - name: "hello-world"
-    image: "ghcr.io/tinfoilsh/tinfoil-containers-hello-world@sha256:c943b1cab16409e2e686ad71deab30364c27421852cdd6b3080df1c7a38331ed"
+  - name: runner
+    image: ghcr.io/theforkproject-dev/goose-tinfoil-lab@sha256:8cac249be0b0819cc0d92426960ada4242df701e8c216fae068adfc71b9b1a8d
+    user: "1000:1000"
     env:
-      - MESSAGE: "Hello from Tinfoil"
+      - ROLE: runner
     secrets:
-      - GREETING_TOKEN
+      - GOOSE_TEST_TOKEN
+    networks: [internal]
+    read_only: true
+    ipc: none
+    tmpfs:
+      /tmp: "size=256m"
+    memory: "2g"
+    cpus: 1
+    pids_limit: 96
+    restart: "no"
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:8080/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  - name: broker
+    image: ghcr.io/theforkproject-dev/goose-tinfoil-lab@sha256:8cac249be0b0819cc0d92426960ada4242df701e8c216fae068adfc71b9b1a8d
+    user: "1000:1000"
+    env:
+      - ROLE: broker
+    networks: [internal, inference]
+    read_only: true
+    ipc: none
+    tmpfs:
+      /tmp: "size=64m"
+    memory: "1g"
+    cpus: 1
+    pids_limit: 48
+    restart: "no"
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:8081/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
 shim:
+  upstream-container: runner
   upstream-port: 8080
   paths:
-    - /*
+    - /health
+    - /run
+    - /result
