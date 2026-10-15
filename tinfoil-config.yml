@@ -1,5 +1,5 @@
 # One bounded synthetic task; no arbitrary prompts, code execution, or files API.
-cvm-version: 0.14.7
+cvm-version: 0.14.14
 cpus: 2
 memory: 8192
 
