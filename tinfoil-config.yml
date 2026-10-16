@@ -17,12 +17,10 @@ networks:
 
 containers:
   - name: runner
-    image: ghcr.io/theforkproject-dev/goose-tinfoil-lab@sha256:f16ef34217be4d942ec2f664e6b3775f5ca07626256efc7f8c25c2505a02324c
+    image: ghcr.io/theforkproject-dev/goose-tinfoil-lab@sha256:13171b3267381b2bf23e4af264f43f7930a736be3f3fd0ee10755a51b95b6337
     user: "1000:1000"
     env:
       - ROLE: runner
-    secrets:
-      - GOOSE_TEST_TOKEN
     networks: [internal]
     read_only: true
     ipc: none
@@ -40,10 +38,12 @@ containers:
       start_period: 10s
 
   - name: broker
-    image: ghcr.io/theforkproject-dev/goose-tinfoil-lab@sha256:f16ef34217be4d942ec2f664e6b3775f5ca07626256efc7f8c25c2505a02324c
+    image: ghcr.io/theforkproject-dev/goose-tinfoil-lab@sha256:13171b3267381b2bf23e4af264f43f7930a736be3f3fd0ee10755a51b95b6337
     user: "1000:1000"
     env:
       - ROLE: broker
+    secrets:
+      - GOOSE_TEST_TOKEN
     networks: [internal, inference]
     read_only: true
     ipc: none
@@ -61,9 +61,10 @@ containers:
       start_period: 10s
 
 shim:
-  upstream-container: runner
-  upstream-port: 8080
+  upstream-container: broker
+  upstream-port: 8081
   paths:
     - /health
+    - /configure
     - /run
     - /result
