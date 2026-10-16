@@ -3,6 +3,12 @@ cvm-version: 0.14.14
 cpus: 2
 memory: 8192
 
+attested-keys:
+  - id: audit-signing
+    key: ed25519
+    uid: 1000
+    gid: 1000
+
 networks:
   internal:
     egress: closed
@@ -17,7 +23,7 @@ networks:
 
 containers:
   - name: runner
-    image: ghcr.io/theforkproject-dev/goose-tinfoil-lab@sha256:aa6960ece868fb6ee5e8d277c3525d74cf178ea7ca1314af1c2671b1886c23e0
+    image: ghcr.io/theforkproject-dev/goose-tinfoil-lab@sha256:db6f2d623b78df1ceb865c1c91c909619c53fffdde4902d699abe3d030cb6a2f
     user: "1000:1000"
     env:
       - ROLE: runner
@@ -38,7 +44,8 @@ containers:
       start_period: 10s
 
   - name: broker
-    image: ghcr.io/theforkproject-dev/goose-tinfoil-lab@sha256:aa6960ece868fb6ee5e8d277c3525d74cf178ea7ca1314af1c2671b1886c23e0
+    keys: [audit-signing]
+    image: ghcr.io/theforkproject-dev/goose-tinfoil-lab@sha256:db6f2d623b78df1ceb865c1c91c909619c53fffdde4902d699abe3d030cb6a2f
     user: "1000:1000"
     env:
       - ROLE: broker
@@ -70,3 +77,6 @@ shim:
     - /result
     - /diagnostics
     - /audit
+    - /signing-info
+    - /admit
+    - /proof
