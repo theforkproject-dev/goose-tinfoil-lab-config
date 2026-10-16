@@ -17,7 +17,7 @@ networks:
 
 containers:
   - name: runner
-    image: ghcr.io/theforkproject-dev/goose-tinfoil-lab@sha256:278ebe0dc5429b23e5ead442e87ab3a7521318ef4ddec5f5f56840f8d116298b
+    image: ghcr.io/theforkproject-dev/goose-tinfoil-lab@sha256:aa6960ece868fb6ee5e8d277c3525d74cf178ea7ca1314af1c2671b1886c23e0
     user: "1000:1000"
     env:
       - ROLE: runner
@@ -38,7 +38,7 @@ containers:
       start_period: 10s
 
   - name: broker
-    image: ghcr.io/theforkproject-dev/goose-tinfoil-lab@sha256:278ebe0dc5429b23e5ead442e87ab3a7521318ef4ddec5f5f56840f8d116298b
+    image: ghcr.io/theforkproject-dev/goose-tinfoil-lab@sha256:aa6960ece868fb6ee5e8d277c3525d74cf178ea7ca1314af1c2671b1886c23e0
     user: "1000:1000"
     env:
       - ROLE: broker
@@ -69,3 +69,4 @@ shim:
     - /run
     - /result
     - /diagnostics
+    - /audit
