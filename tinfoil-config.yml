@@ -1,4 +1,4 @@
-# One bounded synthetic task; no arbitrary prompts, code execution, or files API.
+# Bounded authenticated synthetic conversation; no general tools or uploads.
 cvm-version: 0.14.14
 cpus: 2
 memory: 8192
@@ -23,10 +23,11 @@ networks:
 
 containers:
   - name: runner
-    image: ghcr.io/theforkproject-dev/goose-tinfoil-lab@sha256:d0469aa7da4c9b65e6456c130be8c9b6fb7e6123b35e3ff2608086b71466a579
+    image: ghcr.io/theforkproject-dev/goose-tinfoil-lab@sha256:f515e82f0ccbd7d857890c00ec08cf5d89a1cf8937cd4c98cefe5c864d8eb7c7
     user: "1000:1000"
     env:
       - ROLE: runner
+      - CHAT_MODE: "1"
     networks: [internal]
     read_only: true
     ipc: none
@@ -45,10 +46,11 @@ containers:
 
   - name: broker
     keys: [audit-signing]
-    image: ghcr.io/theforkproject-dev/goose-tinfoil-lab@sha256:d0469aa7da4c9b65e6456c130be8c9b6fb7e6123b35e3ff2608086b71466a579
+    image: ghcr.io/theforkproject-dev/goose-tinfoil-lab@sha256:f515e82f0ccbd7d857890c00ec08cf5d89a1cf8937cd4c98cefe5c864d8eb7c7
     user: "1000:1000"
     env:
       - ROLE: broker
+      - CHAT_MODE: "1"
     secrets:
       - GOOSE_TEST_TOKEN
     networks: [internal, inference]
@@ -73,11 +75,9 @@ shim:
   paths:
     - /health
     - /configure
-    - /run
-    - /result
-    - /diagnostics
-    - /audit
-    - /signing-info
-    - /admit
-    - /proof
-    - /review
+    - /chat/info
+    - /chat/open
+    - /chat/state
+    - /chat/turn
+    - /chat/result
+    - /chat/cancel
