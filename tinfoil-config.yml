@@ -23,7 +23,7 @@ networks:
 
 containers:
   - name: runner
-    image: ghcr.io/theforkproject-dev/goose-tinfoil-lab@sha256:f515e82f0ccbd7d857890c00ec08cf5d89a1cf8937cd4c98cefe5c864d8eb7c7
+    image: ghcr.io/theforkproject-dev/goose-tinfoil-lab@sha256:fadd1ac9904e1181ad664d783281a4d232d21bf791a36fa8bafdd8e0f7c4e312
     user: "1000:1000"
     env:
       - ROLE: runner
@@ -46,7 +46,7 @@ containers:
 
   - name: broker
     keys: [audit-signing]
-    image: ghcr.io/theforkproject-dev/goose-tinfoil-lab@sha256:f515e82f0ccbd7d857890c00ec08cf5d89a1cf8937cd4c98cefe5c864d8eb7c7
+    image: ghcr.io/theforkproject-dev/goose-tinfoil-lab@sha256:fadd1ac9904e1181ad664d783281a4d232d21bf791a36fa8bafdd8e0f7c4e312
     user: "1000:1000"
     env:
       - ROLE: broker
@@ -81,3 +81,4 @@ shim:
     - /chat/turn
     - /chat/result
     - /chat/cancel
+    - /chat/events
