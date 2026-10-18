@@ -23,7 +23,7 @@ networks:
 
 containers:
   - name: runner
-    image: ghcr.io/theforkproject-dev/goose-tinfoil-lab@sha256:fadd1ac9904e1181ad664d783281a4d232d21bf791a36fa8bafdd8e0f7c4e312
+    image: ghcr.io/theforkproject-dev/goose-tinfoil-lab@sha256:d6df7530992745fb96b1c826da7c1cb2a9b81bac19f5f5139f0f477c7f35e4de
     user: "1000:1000"
     env:
       - ROLE: runner
@@ -46,7 +46,7 @@ containers:
 
   - name: broker
     keys: [audit-signing]
-    image: ghcr.io/theforkproject-dev/goose-tinfoil-lab@sha256:fadd1ac9904e1181ad664d783281a4d232d21bf791a36fa8bafdd8e0f7c4e312
+    image: ghcr.io/theforkproject-dev/goose-tinfoil-lab@sha256:d6df7530992745fb96b1c826da7c1cb2a9b81bac19f5f5139f0f477c7f35e4de
     user: "1000:1000"
     env:
       - ROLE: broker
