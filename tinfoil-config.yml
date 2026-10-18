@@ -1,4 +1,4 @@
-# Bounded authenticated synthetic conversation; no general tools or uploads.
+# Governed synthetic local upload and exact-source retrieval; public receipts only.
 cvm-version: 0.14.14
 cpus: 2
 memory: 8192
@@ -20,14 +20,16 @@ networks:
       - inference.tinfoil.sh
       - router-0.tinfoil.sh
       - router.inf6.tinfoil.sh
+      - doc-upload-inf6.tinfoil.containers.tinfoil.dev
+      - attexa-witness-miniature-345337478194-us-east-1-an.s3.us-east-1.amazonaws.com
 
 containers:
   - name: runner
-    image: ghcr.io/theforkproject-dev/goose-tinfoil-lab@sha256:8062ce52edc3fe1197da610aec5844e8bfec3acc5ed8b0f934139b82c6f16c1f
+    image: ghcr.io/theforkproject-dev/goose-tinfoil-lab@sha256:a0300fea0ac09e9f211581c4151de0b071feedef6f202379cecf5431eb230c02
     user: "1000:1000"
     env:
       - ROLE: runner
-      - CHAT_MODE: "working-v2"
+      - CHAT_MODE: "document-v1"
     networks: [internal]
     read_only: true
     ipc: none
@@ -46,11 +48,11 @@ containers:
 
   - name: broker
     keys: [audit-signing]
-    image: ghcr.io/theforkproject-dev/goose-tinfoil-lab@sha256:8062ce52edc3fe1197da610aec5844e8bfec3acc5ed8b0f934139b82c6f16c1f
+    image: ghcr.io/theforkproject-dev/goose-tinfoil-lab@sha256:a0300fea0ac09e9f211581c4151de0b071feedef6f202379cecf5431eb230c02
     user: "1000:1000"
     env:
       - ROLE: broker
-      - CHAT_MODE: "working-v2"
+      - CHAT_MODE: "document-v1"
     secrets:
       - GOOSE_TEST_TOKEN
     networks: [internal, inference]
@@ -83,3 +85,7 @@ shim:
     - /chat/result
     - /chat/cancel
     - /chat/events
+    - /documents/prepare
+    - /documents/content
+    - /documents/status
+    - /documents/configure-source
