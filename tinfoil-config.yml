@@ -13,15 +13,7 @@ networks:
   internal:
     egress: closed
   inference:
-    egress: allowlist
-    allow:
-      - atc.tinfoil.sh
-      - tuf-repo-cdn.sigstore.dev
-      - inference.tinfoil.sh
-      - router-0.tinfoil.sh
-      - router.inf6.tinfoil.sh
-      - doc-upload-inf6.tinfoil.containers.tinfoil.dev
-      - attexa-witness-miniature-345337478194-us-east-1-an.s3.us-east-1.amazonaws.com
+    egress: open
 
 containers:
   - name: runner
